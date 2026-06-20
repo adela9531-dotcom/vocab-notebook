@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>دفتر الكلمات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#16332e;
+    --bg-soft:#1f4540;
+    --card:#faf6ec;
+    --ink:#1d2b28;
+    --ink-soft:#5b6e68;
+    --accent:#e3a73e;
+    --accent-ink:#2a1c05;
+    --mint:#7fb88f;
+    --mint-soft:#284a42;
+    --danger:#c1574a;
+    --cream-text:#f3efe2;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  [hidden]{display:none !important;}
+  body{
+    background:var(--bg);
+    color:var(--cream-text);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .english,[dir="ltr"]{font-family:'Inter',sans-serif;}
+
+  #app{
+    max-width:640px;
+    margin:0 auto;
+    padding:18px 16px 100px;
+  }
+
+  .app-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .brand{
+    font-family:'Lalezar',sans-serif;
+    font-size:30px;
+    font-weight:400;
+    margin:0;
+    letter-spacing:.5px;
+  }
+  .brand .accent-word{color:var(--accent);}
+
+  .icon-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:inherit;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
+  .icon-btn:disabled{opacity:.5;cursor:default;}
+
+  .header-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+  .header-icon-btn{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:var(--bg-soft);
+    color:var(--cream-text);
+    border:1px solid var(--accent);
+  }
+  .header-icon-btn svg{width:18px;height:18px;}
+
+  .search-wrap{margin-bottom:12px;}
+  #searchInput{
+    width:100%;
+    padding:11px 14px;
+    border-radius:12px;
+    border:1px solid var(--bg-soft);
+    background:var(--bg-soft);
+    color:var(--cream-text);
+    font-family:inherit;
+    font-size:15px;
+  }
+  #searchInput::placeholder{color:#9fb3ae;}
+  #searchInput:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+
+  .sort-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .sort-label{font-size:13px;color:#a9c2bc;flex:0 0 auto;}
+  #sortSelect{
+    flex:1;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid var(--bg-soft);
+    background:var(--bg-soft);
+    color:var(--cream-text);
+    font-family:inherit;
+    font-size:13.5px;
+  }
+  .sort-hint{
+    font-size:12px;
+    color:#a9c2bc;
+    margin:0 2px 14px;
+    line-height:1.6;
+  }
+
+  .category-tabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    margin-bottom:18px;
+    scrollbar-width:none;
+  }
+  .category-tabs::-webkit-scrollbar{display:none;}
+  .tab-chip{
+    flex:0 0 auto;
+    padding:8px 16px;
+    border-radius:999px;
+    background:var(--mint-soft);
+    color:var(--cream-text);
+    border:1px solid transparent;
+    font-family:'Tajawal',sans-serif;
+    font-size:14px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .tab-chip.active{
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-weight:700;
+  }
+  .tab-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .group-title{
+    font-size:14px;
+    color:#a9c2bc;
+    margin:18px 2px 8px;
+    font-weight:700;
+  }
+
+  .cards-list{display:flex;flex-direction:column;gap:14px;}
+
+  .card{
+    background:var(--card);
+    color:var(--ink);
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 6px 14px rgba(0,0,0,.18);
+  }
+  .card::before{
+    content:"";
+    display:block;
+    height:12px;
+    background-image:radial-gradient(circle, var(--bg) 2.5px, transparent 3px);
+    background-size:16px 12px;
+    background-position:top center;
+    background-repeat:repeat-x;
+    opacity:.9;
+  }
+  .card-body{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:4px 14px 10px;
+  }
+  .speak-btn{
+    flex:0 0 auto;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-ink);
+    margin-top:2px;
+  }
+  .speak-btn svg{width:18px;height:18px;}
+  .speak-btn.speaking{animation:pulse 1s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(227,167,62,.5);}
+    100%{box-shadow:0 0 0 9px rgba(227,167,62,0);}
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .card-text{flex:1 1 auto;min-width:0;}
+  .entry-title{
+    font-size:15px;
+    color:#a3711f;
+    font-weight:700;
+    margin:0 0 4px;
+    letter-spacing:.1px;
+    text-decoration:underline;
+    text-decoration-thickness:1.5px;
+    text-underline-offset:3px;
+  }
+  .english-text{
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 3px;
+    line-height:1.32;
+    word-break:break-word;
+    text-align:justify;
+    text-justify:inter-word;
+  }
+  .arabic-text{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0;
+    line-height:1.4;
+  }
+  .card-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 14px 10px;
+    gap:8px;
+    flex-wrap:wrap;
+    row-gap:6px;
+  }
+  .category-tag{
+    font-size:12px;
+    background:var(--mint-soft);
+    color:var(--cream-text);
+    padding:4px 10px;
+    border-radius:999px;
+    flex:0 1 auto;
+    min-width:0;
+    max-width:50%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .card-actions{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    flex:0 0 auto;
+    flex-shrink:0;
+  }
+  .move-btn{color:#6b7d77;opacity:.85;}
+  .move-btn svg{width:17px;height:17px;}
+  .move-btn:disabled{opacity:.25;cursor:default;}
+  .move-btn:hover:not(:disabled){opacity:1;}
+
+  .check-icon-btn{color:#3c7a5a;opacity:.85;}
+  .check-icon-btn svg{width:18px;height:18px;}
+  .check-icon-btn.loading svg{animation:spin 1s linear infinite;}
+  .check-icon-btn:hover{opacity:1;}
+
+  .edit-icon-btn{color:#3c6e9e;opacity:.85;}
+  .edit-icon-btn svg{width:18px;height:18px;}
+  .edit-icon-btn:hover{opacity:1;}
+
+  .flag-icon-btn{color:#b08a3e;opacity:.8;}
+  .flag-icon-btn svg{width:18px;height:18px;}
+  .flag-icon-btn.flagged{color:var(--accent);opacity:1;}
+  .flag-icon-btn.flagged svg{fill:currentColor;}
+
+  .delete-btn{
+    color:var(--danger);
+    opacity:.75;
+  }
+  .delete-btn svg{width:17px;height:17px;}
+  .delete-btn:hover{opacity:1;}
+
+  .empty-state{
+    text-align:center;
+    color:#a9c2bc;
+    padding:60px 20px;
+    font-size:15px;
+    line-height:1.7;
+  }
+  .empty-state .big{font-size:38px;display:block;margin-bottom:10px;}
+
+  .fab{
+    position:fixed;
+    left:20px;
+    bottom:24px;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-ink);
+    box-shadow:0 8px 18px rgba(0,0,0,.35);
+    font-size:28px;
+    z-index:5;
+  }
+  .fab svg{width:24px;height:24px;}
+
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(10,20,18,.6);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:20;
+  }
+  .modal{
+    background:var(--card);
+    color:var(--ink);
+    width:100%;
+    max-width:640px;
+    border-radius:20px 20px 0 0;
+    padding:22px 18px 26px;
+    max-height:88vh;
+    overflow-y:auto;
+  }
+  .modal h2{
+    font-family:'Lalezar',sans-serif;
+    font-size:22px;
+    margin:0 0 16px;
+  }
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    font-weight:700;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:11px 12px;
+    border-radius:10px;
+    border:1.5px solid #ddd5c2;
+    font-size:15px;
+    font-family:inherit;
+    background:#fff;
+    color:var(--ink);
+  }
+  .field input[type=range]{
+    padding:0;
+    accent-color:var(--accent);
+    border:none;
+    background:none;
+  }
+  .field .hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin:6px 2px 0;
+    line-height:1.5;
+  }
+  .field input:focus-visible, .field select:focus-visible{
+    outline:2px solid var(--accent);
+    border-color:var(--accent);
+  }
+
+  .check-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:9px;
+    flex-wrap:wrap;
+  }
+  .check-btn{
+    background:var(--mint-soft);
+    color:var(--cream-text);
+    border:none;
+    border-radius:999px;
+    padding:7px 14px;
+    font-size:13px;
+    font-family:inherit;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+  }
+  .check-btn svg{width:14px;height:14px;}
+  .check-btn.loading svg{animation:spin 1s linear infinite;}
+  .check-btn:disabled{opacity:.6;cursor:default;}
+  .check-status{font-size:12.5px;color:var(--ink-soft);}
+
+  .suggestion-box{
+    margin-top:10px;
+    background:#fff;
+    border:1.5px solid var(--accent);
+    border-radius:12px;
+    padding:12px;
+  }
+  .suggestion-box .label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin:0 0 5px;
+  }
+  .suggestion-box .corrected-text{
+    font-family:'Inter',sans-serif;
+    direction:ltr;
+    text-align:left;
+    font-size:15px;
+    color:var(--ink);
+    margin:0 0 8px;
+    line-height:1.5;
+  }
+  .suggestion-box .explanation{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+    line-height:1.6;
+  }
+  .suggestion-actions{display:flex;gap:8px;}
+  .suggestion-actions button{
+    flex:1;
+    padding:9px;
+    border-radius:9px;
+    border:none;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-accept{background:var(--accent);color:var(--accent-ink);}
+  .btn-keep{background:#ece6d6;color:var(--ink);}
+
+  .card-suggestion{margin:0 14px 14px;}
+
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .btn{
+    flex:1;
+    padding:13px;
+    border-radius:12px;
+    border:none;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .btn-cancel{background:#ece6d6;color:var(--ink);}
+  .btn-save{background:var(--accent);color:var(--accent-ink);}
+  .btn:focus-visible{outline:2px solid var(--bg);outline-offset:2px;}
+
+  .export-import-row{display:flex;gap:10px;}
+
+  .wipe-row{margin-top:16px;}
+  .wipe-btn{
+    width:100%;
+    background:#f6e1da;
+    color:var(--danger);
+    border:1.5px solid var(--danger);
+    border-radius:10px;
+    padding:11px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .loading{text-align:center;padding:60px 0;color:#a9c2bc;}
+
+  #toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(10px);
+    background:#2a1c05;
+    color:#f3efe2;
+    padding:11px 18px;
+    border-radius:12px;
+    font-size:14px;
+    max-width:88%;
+    text-align:center;
+    box-shadow:0 8px 18px rgba(0,0,0,.35);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s, transform .25s;
+    z-index:50;
+  }
+  #toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .delete-btn.confirm{
+    color:#fff;
+    background:var(--danger);
+    opacity:1;
+    border-radius:8px;
+    padding:4px 8px;
+    font-size:12px;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+
+  .review-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg);
+    color:var(--cream-text);
+    display:flex;
+    flex-direction:column;
+    z-index:30;
+    padding:18px 16px 26px;
+  }
+  .review-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .review-progress{font-size:14px;color:#a9c2bc;}
+  .review-card{
+    flex:1;
+    background:var(--card);
+    color:var(--ink);
+    border-radius:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:30px 20px;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    gap:14px;
+  }
+  .review-card-title{
+    font-size:16px;
+    color:#a3711f;
+    font-weight:700;
+    margin:0 0 -6px;
+    text-decoration:underline;
+    text-decoration-thickness:1.5px;
+    text-underline-offset:3px;
+  }
+  .review-text{font-size:24px;font-weight:700;line-height:1.5;word-break:break-word;}
+  .review-text.english{font-family:'Inter',sans-serif;}
+  .review-flip-hint{font-size:13px;color:var(--ink-soft);background:none;border:none;font-family:inherit;}
+  .review-actions{display:flex;justify-content:center;gap:22px;margin:18px 0;}
+  .review-actions .icon-btn{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:var(--bg-soft);
+    color:var(--cream-text);
+  }
+  .review-actions .icon-btn svg{width:22px;height:22px;}
+  .review-flag-btn.flagged{background:var(--accent);color:var(--accent-ink);}
+  .review-flag-btn.flagged svg{fill:currentColor;}
+  .review-nav{display:flex;gap:10px;}
+
+  @media (prefers-reduced-motion: reduce){
+    .speak-btn.speaking, .check-icon-btn.loading svg, .check-btn.loading svg{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="app-header">
+    <h1 class="brand">دفتر <span class="accent-word">الكلمات</span></h1>
+    <div class="header-actions">
+      <button class="icon-btn header-icon-btn" id="reviewModeBtn" aria-label="وضع المراجعة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.84Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+      </button>
+      <button class="icon-btn header-icon-btn" id="settingsBtn" aria-label="الإعدادات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="بحث في العنوان والكلمات والجمل...">
+  </div>
+
+  <div class="sort-row">
+    <label for="sortSelect" class="sort-label">ترتيب:</label>
+    <select id="sortSelect">
+      <option value="oldest" selected>الأقدم أولاً</option>
+      <option value="newest">الأحدث أولاً</option>
+      <option value="az">أبجدي (A-Z)</option>
+      <option value="custom">ترتيب يدوي (مخصص)</option>
+    </select>
+  </div>
+  <p class="sort-hint" id="sortHint" hidden>الترتيب اليدوي مفعّل الآن — استخدم سهمي ⬆️⬇️ على كل بطاقة لتغيير موضعها</p>
+
+  <nav class="category-tabs" id="categoryTabs"></nav>
+
+  <div id="loadingState" class="loading">تحميل...</div>
+  <main class="cards-list" id="cardsList" hidden></main>
+  <div class="empty-state" id="emptyState" hidden>
+    <span class="big">📖</span>
+    لا توجد كلمات بعد<br>اضغط على زر + لإضافة أول كلمة أو جملة
+  </div>
+</div>
+
+<button class="icon-btn fab" id="addBtn" aria-label="إضافة كلمة جديدة">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal">
+    <h2 id="modalTitle">كلمة أو جملة جديدة</h2>
+    <div class="field">
+      <label for="titleInput">عنوان (اختياري)</label>
+      <input id="titleInput" placeholder="مثال: في المطار، طلب المساعدة">
+      <p class="hint">يساعدك على تصنيف الجملة بسرعة في القائمة، اتركه فارغًا إذا لم تحتاج إليه</p>
+    </div>
+    <div class="field">
+      <label for="englishInput">النص بالإنجليزية</label>
+      <textarea id="englishInput" dir="ltr" lang="en" spellcheck="true" autocorrect="on" autocapitalize="off" placeholder="e.g. Could you send me the report?" rows="3" style="resize:vertical;line-height:1.5;padding:11px 12px;border-radius:10px;border:1.5px solid #ddd5c2;font-size:15px;font-family:'Inter',sans-serif;background:#fff;color:var(--ink);width:100%;box-sizing:border-box;"></textarea>
+      <div class="check-row">
+        <button type="button" class="check-btn" id="checkBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          تحقق من الصياغة
+        </button>
+        <span class="check-status" id="checkStatus"></span>
+      </div>
+      <div id="suggestionBox" class="suggestion-box" hidden></div>
+      <p class="hint">اضغط «تحقق من الصياغة» للحصول على تصحيح تلقائي للجملة الإنجليزية وأفضل صيغة طبيعية لها، مع شرح مختصر بالعربية لما تم تعديله</p>
+    </div>
+    <div class="field">
+      <label for="arabicInput">الترجمة بالعربية (اختياري)</label>
+      <input id="arabicInput" dir="rtl" placeholder="هل يمكنك إرسال التقرير لي؟">
+    </div>
+    <div class="field">
+      <label for="categorySelect">القسم</label>
+      <select id="categorySelect"></select>
+    </div>
+    <div class="field" id="newCategoryField" hidden>
+      <label for="newCategoryInput">اسم القسم الجديد</label>
+      <input id="newCategoryInput" placeholder="مثال: السفر والمطار">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" id="cancelBtn">إلغاء</button>
+      <button class="btn btn-save" id="saveBtn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settingsOverlay" hidden>
+  <div class="modal">
+    <h2>الإعدادات</h2>
+    <div class="field">
+      <label for="voiceSelect">صوت النطق</label>
+      <select id="voiceSelect"></select>
+    </div>
+    <div class="field">
+      <label for="rateSlider">سرعة النطق: <span id="rateValue">0.95</span></label>
+      <input type="range" id="rateSlider" min="0.5" max="1.5" step="0.05" value="0.95">
+    </div>
+    <div class="check-row">
+      <button type="button" class="check-btn" id="settingsTestBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74z"/></svg>
+        اختبار الصوت
+      </button>
+    </div>
+    <div class="field" style="margin-top:20px;">
+      <label>نسخ احتياطي للبيانات</label>
+      <div class="export-import-row">
+        <button type="button" class="btn btn-cancel" id="exportBtn">تصدير JSON</button>
+        <button type="button" class="btn btn-cancel" id="importBtn">استيراد JSON</button>
+      </div>
+      <input type="file" id="importFileInput" accept="application/json" hidden>
+      <p class="hint">احتفظ بنسخة احتياطية قبل تحويل التطبيق لـ APK، لأن البيانات محفوظة على هذا الجهاز فقط</p>
+    </div>
+    <div class="field wipe-row">
+      <label>إعادة الضبط</label>
+      <button type="button" class="wipe-btn" id="wipeBtn">مسح كل البيانات نهائيًا</button>
+      <p class="hint">سيتم حذف جميع الكلمات والجمل والفئات المخصّصة من هذا الجهاز ولا يمكن التراجع عن هذا الإجراء، يُفضّل تصدير نسخة احتياطية أولاً</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-save" id="settingsCloseBtn">تم</button>
+    </div>
+  </div>
+</div>
+
+<div class="review-overlay" id="reviewOverlay" hidden>
+  <div class="review-top">
+    <button class="icon-btn header-icon-btn" id="reviewCloseBtn" aria-label="إغلاق وضع المراجعة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+    <span class="review-progress" id="reviewProgress">1 / 1</span>
+    <button class="icon-btn header-icon-btn" id="reviewShuffleBtn" aria-label="ترتيب عشوائي">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.973a4 4 0 0 1 3.3 1.7l5.454 8.6a4 4 0 0 0 3.3 1.7H22"/></svg>
+    </button>
+  </div>
+  <div class="review-card" id="reviewCard">
+    <p class="review-card-title" id="reviewCardTitle" hidden></p>
+    <p class="review-text english" id="reviewCardText" dir="ltr"></p>
+    <button class="review-flip-hint" id="reviewFlipHint" type="button">اضغط لرؤية الترجمة</button>
+  </div>
+  <div class="review-actions">
+    <button class="icon-btn review-speak-btn" id="reviewSpeakBtn" aria-label="استمع للنطق">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74z"/></svg>
+    </button>
+    <button class="icon-btn review-flag-btn" id="reviewFlagBtn" aria-label="وضع علامة للمراجعة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+    </button>
+  </div>
+  <div class="review-nav">
+    <button class="btn btn-cancel" id="reviewPrevBtn">السابق</button>
+    <button class="btn btn-save" id="reviewNextBtn">التالي</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'vocab-notebook-data';
+  const DEFAULT_CATEGORIES = ['مقابلات العمل والاجتماعات', 'البريد الإلكتروني', 'المعاملات اليومية'];
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+  let data = { categories: [...DEFAULT_CATEGORIES], entries: [], sortMode: 'oldest' };
+  let activeCategory = 'all';
+  let searchTerm = '';
+  let sortMode = 'oldest';
+  let englishVoice = null;
+  let speechRate = 0.95;
+  let pendingDeleteId = null;
+  let pendingDeleteTimer = null;
+  let pendingWipe = false;
+  let pendingWipeTimer = null;
+  let speechBroken = false;
+  let editingId = null;
+  let correctionPanels = {}; // entry id -> { status:'loading'|'done'|'error', corrected, hasChanges, explanation_ar, message }
+  let reviewPool = [];
+  let reviewIndex = 0;
+  let reviewFlipped = false;
+  let currentUtterance = null;
+
+  const el = {
+    loading: document.getElementById('loadingState'),
+    cardsList: document.getElementById('cardsList'),
+    emptyState: document.getElementById('emptyState'),
+    categoryTabs: document.getElementById('categoryTabs'),
+    searchInput: document.getElementById('searchInput'),
+    sortSelect: document.getElementById('sortSelect'),
+    sortHint: document.getElementById('sortHint'),
+    addBtn: document.getElementById('addBtn'),
+    reviewModeBtn: document.getElementById('reviewModeBtn'),
+    settingsBtn: document.getElementById('settingsBtn'),
+    modalOverlay: document.getElementById('modalOverlay'),
+    modalTitle: document.getElementById('modalTitle'),
+    titleInput: document.getElementById('titleInput'),
+    englishInput: document.getElementById('englishInput'),
+    arabicInput: document.getElementById('arabicInput'),
+    categorySelect: document.getElementById('categorySelect'),
+    newCategoryField: document.getElementById('newCategoryField'),
+    newCategoryInput: document.getElementById('newCategoryInput'),
+    cancelBtn: document.getElementById('cancelBtn'),
+    saveBtn: document.getElementById('saveBtn'),
+    checkBtn: document.getElementById('checkBtn'),
+    checkStatus: document.getElementById('checkStatus'),
+    suggestionBox: document.getElementById('suggestionBox'),
+    settingsOverlay: document.getElementById('settingsOverlay'),
+    voiceSelect: document.getElementById('voiceSelect'),
+    rateSlider: document.getElementById('rateSlider'),
+    rateValue: document.getElementById('rateValue'),
+    settingsTestBtn: document.getElementById('settingsTestBtn'),
+    settingsCloseBtn: document.getElementById('settingsCloseBtn'),
+    exportBtn: document.getElementById('exportBtn'),
+    importBtn: document.getElementById('importBtn'),
+    importFileInput: document.getElementById('importFileInput'),
+    wipeBtn: document.getElementById('wipeBtn'),
+    reviewOverlay: document.getElementById('reviewOverlay'),
+    reviewProgress: document.getElementById('reviewProgress'),
+    reviewCard: document.getElementById('reviewCard'),
+    reviewCardTitle: document.getElementById('reviewCardTitle'),
+    reviewCardText: document.getElementById('reviewCardText'),
+    reviewFlipHint: document.getElementById('reviewFlipHint'),
+    reviewSpeakBtn: document.getElementById('reviewSpeakBtn'),
+    reviewFlagBtn: document.getElementById('reviewFlagBtn'),
+    reviewPrevBtn: document.getElementById('reviewPrevBtn'),
+    reviewNextBtn: document.getElementById('reviewNextBtn'),
+    reviewShuffleBtn: document.getElementById('reviewShuffleBtn'),
+    reviewCloseBtn: document.getElementById('reviewCloseBtn'),
+  };
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function migrateOrders(){
+    let maxOrder = data.entries.reduce((m, e) => typeof e.order === 'number' ? Math.max(m, e.order) : m, -1);
+    data.entries.forEach(e => {
+      if(typeof e.order !== 'number'){
+        maxOrder++;
+        e.order = maxOrder;
+      }
+    });
+  }
+
+  function loadData(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        if(parsed && Array.isArray(parsed.entries) && Array.isArray(parsed.categories)){
+          data = parsed;
+          if(typeof data.sortMode !== 'string') data.sortMode = 'oldest';
+        }
+      } else {
+        saveData();
+      }
+    }catch(e){
+      console.error('فشل تحميل البيانات', e);
+    }
+    migrateOrders();
+    sortMode = data.sortMode || 'oldest';
+    el.sortSelect.value = sortMode;
+    el.sortHint.hidden = sortMode !== 'custom';
+    render();
+  }
+
+  function saveData(){
+    try{
+      data.sortMode = sortMode;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }catch(e){
+      console.error('فشل حفظ البيانات', e);
+      showToast('تعذر حفظ البيانات في هذا المتصفح');
+    }
+  }
+
+  function showToast(msg){
+    let toast = document.getElementById('toast');
+    if(!toast){
+      toast = document.createElement('div');
+      toast.id = 'toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // ---- Text-to-speech ----
+
+  function pickEnglishVoice(){
+    const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    if(!voices.length) return null;
+    return voices.find(v => v.lang === 'en-US') ||
+           voices.find(v => v.lang && v.lang.startsWith('en')) ||
+           voices[0];
+  }
+
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }catch(e){}
+  }
+
+  function speechUnavailable(text, btn){
+    if(btn) btn.classList.remove('speaking');
+    speechBroken = true;
+    copyToClipboard(text);
+    showToast('النطق الصوتي غير متاح هنا حاليًا، تم نسخ الكلمة — جرّب لصقها في تطبيق مثل Google Translate لسماع نطقها');
+  }
+
+  function speak(text, btn){
+    if(btn) btn.classList.add('speaking');
+
+    if(speechBroken){
+      speechUnavailable(text, btn);
+      return;
+    }
+
+    if(!window.speechSynthesis){
+      speechUnavailable(text, btn);
+      return;
+    }
+
+    const wasBusy = window.speechSynthesis.speaking || window.speechSynthesis.pending;
+    window.speechSynthesis.cancel();
+
+    const startUtterance = () => {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'en-US';
+      if(englishVoice) utter.voice = englishVoice;
+      utter.rate = speechRate;
+      currentUtterance = utter; // keep a strong reference so iOS doesn't garbage-collect it mid-speech
+
+      let settled = false;
+      const watchdog = setTimeout(() => {
+        if(!settled){
+          settled = true;
+          window.speechSynthesis.cancel();
+          speechUnavailable(text, btn);
+        }
+      }, 6000);
+
+      utter.onstart = () => {
+        settled = true;
+        clearTimeout(watchdog);
+      };
+      utter.onend = () => {
+        clearTimeout(watchdog);
+        currentUtterance = null;
+        if(btn) btn.classList.remove('speaking');
+      };
+      utter.onerror = () => {
+        clearTimeout(watchdog);
+        currentUtterance = null;
+        if(!settled){
+          settled = true;
+          speechUnavailable(text, btn);
+        } else if(btn){
+          btn.classList.remove('speaking');
+        }
+      };
+      window.speechSynthesis.speak(utter);
+    };
+
+    // Tiny delay after cancel() avoids some Android engines silently dropping
+    // the new utterance when it's queued in the same tick as a cancel.
+    if(wasBusy) setTimeout(startUtterance, 60);
+    else startUtterance();
+  }
+
+  function primeSpeechEngine(){
+    if(!window.speechSynthesis) return;
+    try{
+      const warmUp = new SpeechSynthesisUtterance(' ');
+      warmUp.volume = 0;
+      window.speechSynthesis.speak(warmUp);
+    }catch(e){}
+  }
+  document.addEventListener('touchstart', primeSpeechEngine, { once: true, passive: true });
+  document.addEventListener('click', primeSpeechEngine, { once: true });
+
+  // Chrome desktop has a bug where long utterances cut off after ~15s unless
+  // paused/resumed periodically. This same trick can glitch mobile engines,
+  // so it's skipped there.
+  if(!isMobile){
+    setInterval(() => {
+      if(window.speechSynthesis && window.speechSynthesis.speaking){
+        window.speechSynthesis.pause();
+        window.speechSynthesis.resume();
+      }
+    }, 4000);
+  }
+
+  // ---- AI-powered phrasing correction (Claude primary, LanguageTool fallback) ----
+
+  async function requestCorrectionViaClaude(text){
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: "You are a careful English writing assistant helping an Arabic-speaking learner. Given the English text below, fix any grammar, spelling, word-choice, or phrasing issues so it reads as natural, correct English, while preserving the original meaning and tone as closely as possible. If the text is already correct and natural, return it unchanged with hasChanges set to false.\n\nRespond with ONLY a JSON object, no markdown code fences, no extra commentary, in exactly this shape:\n{\"corrected\":\"<the corrected or unchanged text>\",\"hasChanges\":true or false,\"explanation_ar\":\"<one short sentence in Arabic explaining briefly what was fixed, or an empty string if there are no changes>\"}\n\nText: \"\"\"" + text + "\"\"\""
+        }]
+      })
+    });
+
+    if(!response.ok){
+      let detail = '';
+      try{
+        const errBody = await response.json();
+        detail = errBody && errBody.error && errBody.error.message ? errBody.error.message : '';
+      }catch(e){}
+      throw new Error('API request failed (' + response.status + ')' + (detail ? ': ' + detail : ''));
+    }
+
+    const responseData = await response.json();
+    const textBlocks = (responseData.content || [])
+      .filter(item => item.type === 'text')
+      .map(item => item.text)
+      .join('');
+
+    const firstBrace = textBlocks.indexOf('{');
+    const lastBrace = textBlocks.lastIndexOf('}');
+    if(firstBrace === -1 || lastBrace === -1 || lastBrace < firstBrace){
+      throw new Error('no JSON object found in response: ' + textBlocks.slice(0, 200));
+    }
+
+    let parsed;
+    try{
+      parsed = JSON.parse(textBlocks.slice(firstBrace, lastBrace + 1));
+    }catch(e){
+      throw new Error('failed to parse correction JSON');
+    }
+
+    if(typeof parsed.corrected !== 'string') throw new Error('invalid response shape');
+    return parsed;
+  }
+
+  async function requestCorrectionViaLanguageTool(text){
+    const response = await fetch('https://api.languagetool.org/v2/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'text=' + encodeURIComponent(text) + '&language=en-US'
+    });
+
+    if(!response.ok){
+      throw new Error('LanguageTool request failed (' + response.status + ')');
+    }
+
+    const ltData = await response.json();
+    const matches = Array.isArray(ltData.matches) ? ltData.matches : [];
+
+    if(matches.length === 0){
+      return { corrected: text, hasChanges: false, explanation_ar: '' };
+    }
+
+    let corrected = text;
+    let appliedCount = 0;
+    matches.slice().sort((a, b) => b.offset - a.offset).forEach(match => {
+      if(match.replacements && match.replacements.length > 0 && match.replacements[0].value){
+        const before = corrected.slice(0, match.offset);
+        const after = corrected.slice(match.offset + match.length);
+        corrected = before + match.replacements[0].value + after;
+        appliedCount++;
+      }
+    });
+
+    const hasChanges = corrected !== text;
+    return {
+      corrected,
+      hasChanges,
+      explanation_ar: hasChanges
+        ? ('تم رصد وتصحيح ' + appliedCount + ' ملاحظة نحوية أو إملائية (عبر خدمة احتياطية خارج Claude)')
+        : ''
+    };
+  }
+
+  async function requestCorrection(text){
+    try{
+      return await requestCorrectionViaClaude(text);
+    }catch(claudeErr){
+      console.warn('Claude correction unavailable, falling back to LanguageTool:', claudeErr);
+      try{
+        return await requestCorrectionViaLanguageTool(text);
+      }catch(ltErr){
+        console.error('LanguageTool correction also failed:', ltErr);
+        throw new Error('تعذر الاتصال بأي خدمة تصحيح متاحة حاليًا');
+      }
+    }
+  }
+
+  function suggestionInnerHtml(result, acceptId, keepId){
+    if(!result.hasChanges){
+      return `<p class="explanation">الصياغة صحيحة، لا حاجة لتعديل</p>`;
+    }
+    return `
+      <div class="label">صياغة مقترحة</div>
+      <p class="corrected-text" dir="ltr">${escapeHtml(result.corrected)}</p>
+      ${result.explanation_ar ? `<p class="explanation">${escapeHtml(result.explanation_ar)}</p>` : ''}
+      <div class="suggestion-actions">
+        <button type="button" class="btn-accept" id="${acceptId}">استخدام هذه الصياغة</button>
+        <button type="button" class="btn-keep" id="${keepId}">${result.hasChanges ? 'الاحتفاظ بالأصل' : 'إغلاق'}</button>
+      </div>`;
+  }
+
+  el.checkBtn.addEventListener('click', async () => {
+    const text = el.englishInput.value.trim();
+    if(!text) { el.englishInput.focus(); return; }
+
+    el.checkBtn.disabled = true;
+    el.checkBtn.classList.add('loading');
+    el.checkStatus.textContent = 'جارٍ التحقق...';
+    el.suggestionBox.hidden = true;
+
+    try{
+      const result = await requestCorrection(text);
+      el.checkStatus.textContent = '';
+      if(result.hasChanges){
+        el.suggestionBox.hidden = false;
+        el.suggestionBox.innerHTML = suggestionInnerHtml(result, 'acceptModalSuggestion', 'keepModalOriginal');
+        document.getElementById('acceptModalSuggestion').addEventListener('click', () => {
+          el.englishInput.value = result.corrected;
+          el.suggestionBox.hidden = true;
+        });
+        document.getElementById('keepModalOriginal').addEventListener('click', () => {
+          el.suggestionBox.hidden = true;
+        });
+      } else {
+        showToast('الصياغة صحيحة، لا حاجة لتعديل');
+      }
+    }catch(e){
+      console.error('Correction error:', e);
+      el.checkStatus.textContent = '';
+      showToast('تعذر التحقق من الصياغة: ' + (e && e.message ? e.message : 'خطأ غير معروف'));
+    }finally{
+      el.checkBtn.disabled = false;
+      el.checkBtn.classList.remove('loading');
+    }
+  });
+
+  // ---- Rendering ----
+
+  function renderCategoryTabs(){
+    const counts = {};
+    let flaggedCount = 0;
+    data.entries.forEach(en => {
+      counts[en.category] = (counts[en.category]||0) + 1;
+      if(en.needsReview) flaggedCount++;
+    });
+    let html = `<button class="tab-chip ${activeCategory==='all'?'active':''}" data-cat="all">الكل (${data.entries.length})</button>`;
+    html += `<button class="tab-chip ${activeCategory==='__flagged__'?'active':''}" data-cat="__flagged__">🚩 للمراجعة (${flaggedCount})</button>`;
+    data.categories.forEach(cat => {
+      html += `<button class="tab-chip ${activeCategory===cat?'active':''}" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)} (${counts[cat]||0})</button>`;
+    });
+    el.categoryTabs.innerHTML = html;
+    el.categoryTabs.querySelectorAll('.tab-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.cat;
+        render();
+      });
+    });
+  }
+
+  function correctionPanelHtml(id){
+    const panel = correctionPanels[id];
+    if(!panel) return '';
+
+    if(panel.status === 'loading'){
+      return `<div class="suggestion-box card-suggestion"><div class="label">جارٍ التحقق من الصياغة...</div></div>`;
+    }
+    if(panel.status === 'error'){
+      return `<div class="suggestion-box card-suggestion">
+        <p class="explanation">تعذر التحقق من الصياغة${panel.message ? ': ' + escapeHtml(panel.message) : ''}</p>
+        <div class="suggestion-actions"><button type="button" class="btn-keep" data-action="dismiss-correction">إغلاق</button></div>
+      </div>`;
+    }
+    return `<div class="suggestion-box card-suggestion">${suggestionInnerHtml(panel, '', '')
+      .replace('id=""', 'data-action="apply-correction"')
+      .replace('id=""', 'data-action="dismiss-correction"')}</div>`;
+  }
+
+  function cardHtml(entry, prevId, nextId){
+    const panel = correctionPanels[entry.id];
+    const checking = panel && panel.status === 'loading';
+    return `
+      <article class="card" data-id="${entry.id}">
+        <div class="card-body">
+          <button class="icon-btn speak-btn" aria-label="استمع للنطق" data-action="speak" data-text="${escapeHtml(entry.english)}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12a4.5 4.5 0 0 0-2-3.74v7.48a4.5 4.5 0 0 0 2-3.74z"/></svg>
+          </button>
+          <div class="card-text">
+            ${entry.title ? `<p class="entry-title">${escapeHtml(entry.title)}</p>` : ''}
+            <p class="english-text" dir="ltr">${escapeHtml(entry.english)}</p>
+            ${entry.arabic ? `<p class="arabic-text" dir="rtl">${escapeHtml(entry.arabic)}</p>` : ''}
+          </div>
+        </div>
+        <div class="card-meta">
+          <span class="category-tag">${escapeHtml(entry.category)}</span>
+          <div class="card-actions">
+            <button class="icon-btn move-btn" aria-label="نقل لأعلى" data-action="move-up" data-prev-id="${prevId || ''}" ${prevId ? '' : 'disabled'}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+            </button>
+            <button class="icon-btn move-btn" aria-label="نقل لأسفل" data-action="move-down" data-next-id="${nextId || ''}" ${nextId ? '' : 'disabled'}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <button class="icon-btn check-icon-btn ${checking ? 'loading' : ''}" aria-label="تحقق من الصياغة" data-action="check" ${checking ? 'disabled' : ''}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </button>
+            <button class="icon-btn edit-icon-btn" aria-label="تعديل" data-action="edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497Z"/><path d="m15 5 4 4"/></svg>
+            </button>
+            <button class="icon-btn flag-icon-btn ${entry.needsReview ? 'flagged' : ''}" aria-label="وضع علامة للمراجعة" data-action="toggle-flag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            </button>
+            ${entry.id === pendingDeleteId ? `
+            <button class="icon-btn delete-btn confirm" aria-label="تأكيد الحذف" data-action="delete">
+              تأكيد الحذف؟
+            </button>` : `
+            <button class="icon-btn delete-btn" aria-label="حذف" data-action="delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>`}
+          </div>
+        </div>
+        ${correctionPanelHtml(entry.id)}
+      </article>`;
+  }
+
+  function cardsHtmlForSegment(segmentEntries){
+    return segmentEntries.map((entry, idx) => {
+      const prevId = idx > 0 ? segmentEntries[idx-1].id : '';
+      const nextId = idx < segmentEntries.length-1 ? segmentEntries[idx+1].id : '';
+      return cardHtml(entry, prevId, nextId);
+    }).join('');
+  }
+
+  function sortEntries(arr){
+    const sorted = arr.slice();
+    if(sortMode === 'oldest'){
+      sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if(sortMode === 'az'){
+      sorted.sort((a, b) => a.english.toLowerCase().localeCompare(b.english.toLowerCase()));
+    } else if(sortMode === 'custom'){
+      sorted.sort((a, b) => (typeof a.order === 'number' ? a.order : 0) - (typeof b.order === 'number' ? b.order : 0));
+    } else {
+      sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+    return sorted;
+  }
+
+  function getFilteredEntries(){
+    const filtered = data.entries.filter(en => {
+      const matchesSearch = !searchTerm ||
+        en.english.toLowerCase().includes(searchTerm) ||
+        (en.arabic && en.arabic.toLowerCase().includes(searchTerm)) ||
+        (en.title && en.title.toLowerCase().includes(searchTerm));
+      const matchesCategory = activeCategory === 'all' ? true
+        : activeCategory === '__flagged__' ? !!en.needsReview
+        : en.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+    return sortEntries(filtered);
+  }
+
+  function render(){
+    renderCategoryTabs();
+    const filtered = getFilteredEntries();
+
+    if(data.entries.length === 0){
+      el.cardsList.hidden = true;
+      el.emptyState.hidden = false;
+      el.emptyState.innerHTML = `<span class="big">📖</span>لا توجد كلمات بعد<br>اضغط على زر + لإضافة أول كلمة أو جملة`;
+    } else if(filtered.length === 0){
+      el.cardsList.hidden = true;
+      el.emptyState.hidden = false;
+      el.emptyState.innerHTML = `<span class="big">🔍</span>لا توجد نتائج مطابقة`;
+    } else {
+      el.emptyState.hidden = true;
+      el.cardsList.hidden = false;
+      if(activeCategory === 'all'){
+        let html = '';
+        const grouped = {};
+        filtered.forEach(en => {
+          grouped[en.category] = grouped[en.category] || [];
+          grouped[en.category].push(en);
+        });
+        const orderedCats = [...data.categories.filter(c => grouped[c]), ...Object.keys(grouped).filter(c => !data.categories.includes(c))];
+        orderedCats.forEach(cat => {
+          html += `<div class="group-title">${escapeHtml(cat)}</div>`;
+          html += cardsHtmlForSegment(grouped[cat]);
+        });
+        el.cardsList.innerHTML = html;
+      } else {
+        el.cardsList.innerHTML = cardsHtmlForSegment(filtered);
+      }
+    }
+
+    el.loading.hidden = true;
+  }
+
+  function setSortMode(mode){
+    sortMode = mode;
+    el.sortSelect.value = mode;
+    el.sortHint.hidden = mode !== 'custom';
+  }
+
+  function ensureCustomOrderBaseline(){
+    if(sortMode === 'custom') return;
+    const ranked = sortEntries(data.entries.slice());
+    ranked.forEach((en, idx) => { en.order = idx; });
+    setSortMode('custom');
+    showToast('تم تفعيل الترتيب اليدوي، استخدم الأسهم لتغيير مواضع الجمل');
+  }
+
+  function moveEntry(id, neighborId){
+    if(!neighborId) return;
+    ensureCustomOrderBaseline();
+    const entry = data.entries.find(e => e.id === id);
+    const neighbor = data.entries.find(e => e.id === neighborId);
+    if(!entry || !neighbor) return;
+    const tmp = entry.order;
+    entry.order = neighbor.order;
+    neighbor.order = tmp;
+    saveData();
+    render();
+  }
+
+  async function handleCardCheck(id){
+    const entry = data.entries.find(en => en.id === id);
+    if(!entry) return;
+    const existing = correctionPanels[id];
+    if(existing && existing.status === 'loading') return;
+
+    correctionPanels[id] = { status: 'loading' };
+    render();
+
+    try{
+      const result = await requestCorrection(entry.english);
+      correctionPanels[id] = { status: 'done', ...result };
+    }catch(e){
+      console.error('Correction error:', e);
+      correctionPanels[id] = { status: 'error', message: e && e.message ? e.message : '' };
+    }
+    render();
+  }
+
+  el.cardsList.addEventListener('click', (e) => {
+    const actionBtn = e.target.closest('[data-action]');
+    if(!actionBtn) return;
+    const card = e.target.closest('.card');
+    const id = card.dataset.id;
+
+    if(actionBtn.dataset.action === 'speak'){
+      speak(actionBtn.dataset.text, actionBtn);
+    } else if(actionBtn.dataset.action === 'move-up'){
+      moveEntry(id, actionBtn.dataset.prevId);
+    } else if(actionBtn.dataset.action === 'move-down'){
+      moveEntry(id, actionBtn.dataset.nextId);
+    } else if(actionBtn.dataset.action === 'delete'){
+      clearTimeout(pendingDeleteTimer);
+      if(pendingDeleteId === id){
+        pendingDeleteId = null;
+        data.entries = data.entries.filter(en => en.id !== id);
+        delete correctionPanels[id];
+        saveData();
+        render();
+      } else {
+        pendingDeleteId = id;
+        render();
+        pendingDeleteTimer = setTimeout(() => {
+          pendingDeleteId = null;
+          render();
+        }, 3000);
+      }
+    } else if(actionBtn.dataset.action === 'check'){
+      handleCardCheck(id);
+    } else if(actionBtn.dataset.action === 'apply-correction'){
+      const panel = correctionPanels[id];
+      const entry = data.entries.find(en => en.id === id);
+      if(panel && entry && panel.corrected){
+        entry.english = panel.corrected;
+        saveData();
+      }
+      delete correctionPanels[id];
+      render();
+    } else if(actionBtn.dataset.action === 'dismiss-correction'){
+      delete correctionPanels[id];
+      render();
+    } else if(actionBtn.dataset.action === 'edit'){
+      const entry = data.entries.find(en => en.id === id);
+      if(entry) openModal(entry);
+    } else if(actionBtn.dataset.action === 'toggle-flag'){
+      const entry = data.entries.find(en => en.id === id);
+      if(entry){
+        entry.needsReview = !entry.needsReview;
+        saveData();
+        render();
+      }
+    }
+  });
+
+  el.searchInput.addEventListener('input', (e) => {
+    searchTerm = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  el.sortSelect.addEventListener('change', (e) => {
+    setSortMode(e.target.value);
+    saveData();
+    render();
+  });
+
+  // ---- Add / Edit modal ----
+
+  function populateCategorySelect(){
+    el.categorySelect.innerHTML = data.categories
+      .map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
+      .join('') + `<option value="__new__">+ قسم جديد</option>`;
+  }
+
+  function openModal(entry){
+    editingId = entry ? entry.id : null;
+    el.modalTitle.textContent = entry ? 'تعديل الكلمة أو الجملة' : 'كلمة أو جملة جديدة';
+    el.titleInput.value = entry ? (entry.title || '') : '';
+    el.englishInput.value = entry ? entry.english : '';
+    el.arabicInput.value = entry ? (entry.arabic || '') : '';
+    el.newCategoryInput.value = '';
+    el.newCategoryField.hidden = true;
+    el.suggestionBox.hidden = true;
+    el.checkStatus.textContent = '';
+    populateCategorySelect();
+    if(entry) el.categorySelect.value = entry.category;
+    el.modalOverlay.hidden = false;
+    setTimeout(() => el.englishInput.focus(), 50);
+  }
+
+  function closeModal(){
+    el.modalOverlay.hidden = true;
+    editingId = null;
+  }
+
+  el.addBtn.addEventListener('click', () => openModal(null));
+  el.cancelBtn.addEventListener('click', closeModal);
+  el.modalOverlay.addEventListener('click', (e) => {
+    if(e.target === el.modalOverlay) closeModal();
+  });
+
+  el.categorySelect.addEventListener('change', () => {
+    el.newCategoryField.hidden = el.categorySelect.value !== '__new__';
+    if(el.categorySelect.value === '__new__') el.newCategoryInput.focus();
+  });
+
+  el.saveBtn.addEventListener('click', () => {
+    const english = el.englishInput.value.trim();
+    if(!english){
+      el.englishInput.focus();
+      return;
+    }
+    const title = el.titleInput.value.trim();
+    const arabic = el.arabicInput.value.trim();
+    let category = el.categorySelect.value;
+    if(category === '__new__'){
+      category = el.newCategoryInput.value.trim();
+      if(!category){
+        el.newCategoryInput.focus();
+        return;
+      }
+      if(!data.categories.includes(category)){
+        data.categories.push(category);
+      }
+    }
+
+    if(editingId){
+      const entry = data.entries.find(en => en.id === editingId);
+      if(entry){
+        entry.title = title;
+        entry.english = english;
+        entry.arabic = arabic;
+        entry.category = category;
+      }
+    } else {
+      const maxOrder = data.entries.reduce((m, e) => typeof e.order === 'number' ? Math.max(m, e.order) : m, -1);
+      data.entries.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+        title, english, arabic, category,
+        createdAt: new Date().toISOString(),
+        needsReview: false,
+        order: maxOrder + 1
+      });
+    }
+
+    saveData();
+    closeModal();
+    render();
+  });
+
+  // textarea: Enter ينزل سطر، Ctrl+Enter يحفظ
+  el.englishInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) el.saveBtn.click();
+  });
+
+  // ---- Settings (voice, speed, export/import, wipe) ----
+
+  function populateVoiceSelect(){
+    let voices = window.speechSynthesis ? window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith('en')) : [];
+    // English (US) voices first, so it's the natural default choice
+    voices = voices.slice().sort((a, b) => {
+      const aUS = a.lang === 'en-US' ? 0 : 1;
+      const bUS = b.lang === 'en-US' ? 0 : 1;
+      return aUS - bUS;
+    });
+    el.voiceSelect.innerHTML = voices.length
+      ? voices.map((v, i) => `<option value="${i}">${escapeHtml(v.name)} (${escapeHtml(v.lang)})</option>`).join('')
+      : `<option value="">الصوت الافتراضي</option>`;
+    if(englishVoice){
+      const idx = voices.findIndex(v => v.name === englishVoice.name && v.lang === englishVoice.lang);
+      if(idx >= 0) el.voiceSelect.value = String(idx);
+    } else if(voices.length){
+      el.voiceSelect.value = '0';
+      englishVoice = voices[0];
+    }
+    el.voiceSelect._voicesList = voices;
+  }
+
+  function resetWipeButton(){
+    pendingWipe = false;
+    clearTimeout(pendingWipeTimer);
+    el.wipeBtn.textContent = 'مسح كل البيانات نهائيًا';
+  }
+
+  el.settingsBtn.addEventListener('click', () => {
+    populateVoiceSelect();
+    el.rateSlider.value = speechRate;
+    el.rateValue.textContent = speechRate.toFixed(2);
+    resetWipeButton();
+    el.settingsOverlay.hidden = false;
+  });
+
+  el.settingsCloseBtn.addEventListener('click', () => {
+    resetWipeButton();
+    el.settingsOverlay.hidden = true;
+  });
+
+  el.settingsOverlay.addEventListener('click', (e) => {
+    if(e.target === el.settingsOverlay){
+      resetWipeButton();
+      el.settingsOverlay.hidden = true;
+    }
+  });
+
+  el.voiceSelect.addEventListener('change', () => {
+    const voices = el.voiceSelect._voicesList || [];
+    const idx = parseInt(el.voiceSelect.value, 10);
+    englishVoice = voices[idx] || englishVoice;
+  });
+
+  el.rateSlider.addEventListener('input', () => {
+    speechRate = parseFloat(el.rateSlider.value);
+    el.rateValue.textContent = speechRate.toFixed(2);
+  });
+
+  el.settingsTestBtn.addEventListener('click', () => {
+    speak('Hello! This is a sound test.', el.settingsTestBtn);
+  });
+
+  el.wipeBtn.addEventListener('click', () => {
+    if(!pendingWipe){
+      pendingWipe = true;
+      el.wipeBtn.textContent = 'اضغط مرة أخرى للتأكيد النهائي';
+      clearTimeout(pendingWipeTimer);
+      pendingWipeTimer = setTimeout(resetWipeButton, 4000);
+      return;
+    }
+    resetWipeButton();
+    data.entries = [];
+    correctionPanels = {};
+    pendingDeleteId = null;
+    saveData();
+    render();
+    el.settingsOverlay.hidden = true;
+    showToast('تم مسح جميع الكلمات المحفوظة من هذا الجهاز');
+  });
+
+  function exportData(){
+    try{
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'vocab-notebook-backup.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('تم تصدير نسخة احتياطية بصيغة JSON');
+    }catch(e){
+      console.error(e);
+      showToast('تعذر تصدير البيانات');
+    }
+  }
+
+  function importDataFromFile(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(reader.result);
+        if(!parsed || !Array.isArray(parsed.entries)) throw new Error('invalid file');
+        const existingIds = new Set(data.entries.map(en => en.id));
+        let added = 0;
+        parsed.entries.forEach(en => {
+          if(en && en.english && !existingIds.has(en.id)){
+            const newId = en.id || (Date.now().toString(36) + Math.random().toString(36).slice(2,7));
+            data.entries.push({
+              id: newId,
+              title: en.title || '',
+              english: en.english,
+              arabic: en.arabic || '',
+              category: en.category || data.categories[0] || 'عام',
+              createdAt: en.createdAt || new Date().toISOString(),
+              needsReview: !!en.needsReview,
+              order: typeof en.order === 'number' ? en.order : undefined
+            });
+            existingIds.add(newId);
+            added++;
+          }
+        });
+        if(Array.isArray(parsed.categories)){
+          parsed.categories.forEach(c => { if(c && !data.categories.includes(c)) data.categories.push(c); });
+        }
+        migrateOrders();
+        saveData();
+        render();
+        showToast('تم استيراد ' + added + ' كلمة بنجاح');
+      }catch(e){
+        console.error(e);
+        showToast('ملف غير صالح، تعذر الاستيراد');
+      }
+    };
+    reader.onerror = () => showToast('تعذر قراءة الملف');
+    reader.readAsText(file);
+  }
+
+  el.exportBtn.addEventListener('click', exportData);
+  el.importBtn.addEventListener('click', () => el.importFileInput.click());
+  el.importFileInput.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if(file) importDataFromFile(file);
+    el.importFileInput.value = '';
+  });
+
+  // ---- Review / flashcard mode ----
+
+  function openReviewMode(){
+    reviewPool = getFilteredEntries();
+    if(reviewPool.length === 0){
+      showToast('لا توجد كلمات لعرضها في وضع المراجعة');
+      return;
+    }
+    reviewIndex = 0;
+    reviewFlipped = false;
+    el.reviewOverlay.hidden = false;
+    renderReviewCard();
+  }
+
+  function closeReviewMode(){
+    el.reviewOverlay.hidden = true;
+    render();
+  }
+
+  function renderReviewCard(){
+    const entry = reviewPool[reviewIndex];
+    if(!entry){ closeReviewMode(); return; }
+    el.reviewProgress.textContent = (reviewIndex + 1) + ' / ' + reviewPool.length;
+    el.reviewCardTitle.hidden = !entry.title;
+    el.reviewCardTitle.textContent = entry.title || '';
+    if(!reviewFlipped){
+      el.reviewCardText.className = 'review-text english';
+      el.reviewCardText.setAttribute('dir', 'ltr');
+      el.reviewCardText.textContent = entry.english;
+      el.reviewFlipHint.textContent = 'اضغط لرؤية الترجمة';
+    } else {
+      el.reviewCardText.className = 'review-text';
+      el.reviewCardText.setAttribute('dir', 'rtl');
+      el.reviewCardText.textContent = entry.arabic || 'لا توجد ترجمة محفوظة';
+      el.reviewFlipHint.textContent = 'اضغط للرجوع للإنجليزية';
+    }
+    el.reviewFlagBtn.classList.toggle('flagged', !!entry.needsReview);
+  }
+
+  el.reviewModeBtn.addEventListener('click', openReviewMode);
+  el.reviewCloseBtn.addEventListener('click', closeReviewMode);
+
+  el.reviewCard.addEventListener('click', () => {
+    reviewFlipped = !reviewFlipped;
+    renderReviewCard();
+  });
+
+  el.reviewPrevBtn.addEventListener('click', () => {
+    reviewIndex = (reviewIndex - 1 + reviewPool.length) % reviewPool.length;
+    reviewFlipped = false;
+    renderReviewCard();
+  });
+
+  el.reviewNextBtn.addEventListener('click', () => {
+    reviewIndex = (reviewIndex + 1) % reviewPool.length;
+    reviewFlipped = false;
+    renderReviewCard();
+  });
+
+  el.reviewShuffleBtn.addEventListener('click', () => {
+    for(let i = reviewPool.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [reviewPool[i], reviewPool[j]] = [reviewPool[j], reviewPool[i]];
+    }
+    reviewIndex = 0;
+    reviewFlipped = false;
+    renderReviewCard();
+    showToast('تم ترتيب البطاقات عشوائيًا');
+  });
+
+  el.reviewSpeakBtn.addEventListener('click', () => {
+    const entry = reviewPool[reviewIndex];
+    if(entry) speak(entry.english, el.reviewSpeakBtn);
+  });
+
+  el.reviewFlagBtn.addEventListener('click', () => {
+    const entry = reviewPool[reviewIndex];
+    if(!entry) return;
+    entry.needsReview = !entry.needsReview;
+    saveData();
+    renderReviewCard();
+  });
+
+  if(window.speechSynthesis){
+    englishVoice = pickEnglishVoice();
+    window.speechSynthesis.onvoiceschanged = () => {
+      englishVoice = pickEnglishVoice();
+    };
+  }
+
+  loadData();
+})();
+</script>
+</body>
+</html>
